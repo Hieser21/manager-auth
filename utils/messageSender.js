@@ -4,7 +4,6 @@ require('dotenv').config()
 
 const messageSender = async (phone, body)=>{
     try {
-      console.log(phone, encodeURIComponent(body))
       let config = {
         method: 'get',
         url: `http://`+ process.env.smsUrl  + process.env.smsPassword +`&type=text&senderid=`+ process.env.smsUserName + `&number=${phone}&message=${encodeURIComponent(body)}`,
