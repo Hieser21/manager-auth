@@ -63,6 +63,7 @@ Password: ${password}`)
 })
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
+  const ip = req.ip
   const user = await User.findOne({ email });
   if (user) {
     if (bcrypt.compare(user.password, password)) {
@@ -98,6 +99,7 @@ app.post('/login', async (req, res) => {
 app.post('/cookies', async (req, res) => {
   let token = req.cookies.token;
   let email = req.body.email
+  let ip = req.ip
   let user = await User.findOne({ email: email })
 
   let isValid = jwt.verify(token, process.env.JWT_SECRET)
@@ -105,11 +107,11 @@ app.post('/cookies', async (req, res) => {
       await User.findOneAndUpdate({ email: email }, { $pull: { 'reqIPs': req.ip } })
       return res.status(401).json({ success: false, message: "Refresh Token Expired!" })
   }
-  User.password = undefined;
-  User.reqIPs = undefined;
+  user.password = undefined;
+  user.reqIPs = undefined;
   let accessToken = jwt.sign({ email: user.email }, process.env.ACCESS_SECRET, { expiresIn: '30m' })
     res.header('Access-Control-Allow-Origin', "*")
-  return res.status(200).cookie('access_token', accessToken, { httpOnly: true, expires: new Date(Date.now() + 1800000), sameSite: 'lax' }).json({ success: true, User, message: "Token valid!" })
+  return res.status(200).cookie('access_token', accessToken, { httpOnly: true, expires: new Date(Date.now() + 1800000), sameSite: 'lax' }).json({ success: true, user, message: "Token valid!" })
 
 })
 // Start the server
