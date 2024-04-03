@@ -10,6 +10,8 @@ const jwt = require("jsonwebtoken");
 const User = require('./models/user')
 const messageSender = require('./utils/messageSender')
 app.use(express.json());
+//trust proxy
+app.enable('trust proxy')
 app.use(cors({
   origin: ['http://localhost:3000']
 }));
@@ -21,6 +23,7 @@ mongoose.connect(process.env.MONGO_URI, {
 
 app.post('/register', async (req, res) => {
   const { name, phone } = req.body;
+  let ip = req.ip
   const user = await User.findOne({ phone });
 
   if (user) {
@@ -34,23 +37,23 @@ app.post('/register', async (req, res) => {
     const int = randInt(100, 999);
     
     const email = name + int + "manager@acs.com" 
-    
+    console.log(ip, req.ip)
     const password = generateRandomString(10);
     const newUser = new User({
       name: name,
       phone: phone,
-      reqIps: [req.ip],
+      reqIPs: [ip],
       email: email,
       password: password
     });
     const salt = await bcrypt.genSalt(10);
     newUser.password = await bcrypt.hash(password, salt);
     await newUser.save();
-    const result = await messageSender(phone, `Your Apars Manager Credentials are: 
-    Username: ${email}
-    Password: ${password}`)
+
+    await messageSender(phone, `Your Apars Manager Credentials are: 
+Username: ${email}
+Password: ${password}`)
     console.log("[INFO] USER REGISTERED", newUser);
-    console.log("[INFO] SMS", result);
     return res.status(200).json({
       success: true,
       message: "User created successfully"

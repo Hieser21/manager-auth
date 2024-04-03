@@ -4,6 +4,7 @@ require('dotenv').config()
 
 const messageSender = async (phone, body)=>{
     try {
+      console.log(phone, encodeURIComponent(body))
       let config = {
         method: 'get',
         url: `http://`+ process.env.smsUrl  + process.env.smsPassword +`&type=text&senderid=`+ process.env.smsUserName + `&number=${phone}&message=${encodeURIComponent(body)}`,
@@ -12,7 +13,7 @@ const messageSender = async (phone, body)=>{
       };
       axios.request(config)
 .then((response) => {
-  console.log("[INFO] ", response.data );
+  console.log("[INFO] ", response.data);
 })
 .catch((error) => {
   console.log("[ERROR] " + error);

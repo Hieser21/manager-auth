@@ -10,8 +10,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     reqIPs: {
-        type: Array,
-        default: []
+        type: Array
     },
     name: {
         type: String,
