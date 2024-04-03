@@ -35,8 +35,8 @@ app.post('/register', async (req, res) => {
   } else {
     const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     const int = randInt(100, 999);
-    
-    const email = name + int + "manager@acs.com" 
+    let firstName = name.split(" ")[0];
+    const email = firstName + int + "manager@acs.com" 
     console.log(ip, req.ip)
     const password = generateRandomString(10);
     const newUser = new User({
