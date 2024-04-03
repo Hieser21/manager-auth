@@ -30,7 +30,7 @@ app.post('/register', async (req, res) => {
     console.log("[ERROR] REGISTER USER EXISTS: " + user.email);
     return res.status(401).json({
       success: false,
-      message: "User already exists"
+      message: "Phone number already used for account creation"
     });
   } else {
     const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
